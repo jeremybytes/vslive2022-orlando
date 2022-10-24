@@ -510,5 +510,5 @@ So this has shown us that we can run multiple tasks concurrently. This is useful
 "Task.WhenAll" lets us know when all of the tasks are complete. We can use a continuation to get the complete AggregateException that otherwise gets truncated if we directly "await" it.
 
 ***
-*End of Lab 03 - Working with AggregateException*
+*End of Lab 04 - Working with AggregateException*
 ***

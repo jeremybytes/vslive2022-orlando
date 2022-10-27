@@ -31,19 +31,14 @@ Attendee Requirements:
 
 * You need to have the .NET 6 SDK installed as well as the code editor of your choice (Visual Studio 2022 Community Edition or Visual Studio Code are both good (free) choices).
 
-* Interactive labs, web application samples, and console samples will work with Windows, macOS, and Linux (anywhere .NET 6 will run).  
-
-* WPF desktop samples will only work on Windows machines. There are equivalent web and console examples for these projects.
-
 Links:
 
 * .NET 6.0 SDK  
 [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download)  
 * Visual Studio 2022 (Community)  
 [https://visualstudio.microsoft.com/downloads/](https://visualstudio.microsoft.com/downloads/)  
-Note: Install the "*ASP.NET and web development*" workload for the labs and samples. Include "*.NET desktop development*" for "digit-display" sample and WPF-based samples.  
 * Visual Studio Code  
-[https://code.visualstudio.com/download](https://code.visualstudio.com/download)  
+[https://code.visualstudio.com/download](https://code.visualstudio.com/download)    
 
 
 Running the Samples
@@ -122,10 +117,11 @@ Hands-On Labs
 --------------
 The "Labs" folder contains hands-on labs. The labs are integrated throughout the workshop day.    
 
-* [Lab 01 - Recommended Practices and Continuations](./Labs/Lab01/)
-* [Lab 02 - Unit Testing Asynchronous Methods](./Labs/Lab02/)
-* [Lab 03 - Adding Async to an Existing Application](./Labs/Lab03/)
-* [Lab 04 - Working with AggregateException](./Labs/Lab04/)
+* [Lab 01 - Recommended Practices and Continuations](https://github.com/jeremybytes/vslive2022-orlando/tree/main/Labs/Lab01)
+* [Lab 02 - Unit Testing Asynchronous Methods](https://github.com/jeremybytes/vslive2022-orlando/tree/main/Labs/Lab02)
+* [Lab 03 - Adding Async to an Existing Application](https://github.com/jeremybytes/vslive2022-orlando/tree/main/Labs/Lab03)
+* [Lab 04 - Working with AggregateException](https://github.com/jeremybytes/vslive2022-orlando/tree/main/Labs/Lab04)
+* [Lab 05 - Parallel Practices](https://github.com/jeremybytes/vslive2022-orlando/tree/main/Labs/Lab05)
 
 Each lab consists of the following:
 

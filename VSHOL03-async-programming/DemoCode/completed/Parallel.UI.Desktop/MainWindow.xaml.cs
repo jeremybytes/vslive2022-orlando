@@ -176,7 +176,7 @@ public partial class MainWindow : Window
                     tokenSource.Token,
                     async (id, token) =>
                     {
-                        var person = await reader.GetPersonAsync(id);
+                        var person = await reader.GetPersonAsync(id, token);
                         PersonListBox.Items.Add(person);
                     });
             }

@@ -30,7 +30,7 @@ public partial class MainWindow : Window
             {
                 // The next iteration of the loop will not
                 // run until this one is complete
-                var person = await reader.GetPersonAsync(id);
+                var person = await reader.GetPersonAsync(id, tokenSource.Token);
                 PersonListBox.Items.Add(person);
             }
         }
@@ -44,6 +44,7 @@ public partial class MainWindow : Window
         }
         finally
         {
+            tokenSource.Dispose();
             FetchWithAwaitButton.IsEnabled = true;
         }
     }
@@ -51,75 +52,79 @@ public partial class MainWindow : Window
     // OPTION 2: Task w/ Continuation (runs parallel)
     private async void FetchWithTaskButton_Click(object sender, RoutedEventArgs e)
     {
-        tokenSource = new CancellationTokenSource();
-        FetchWithTaskButton.IsEnabled = false;
-        ClearListBox();
-
-        var taskList = new List<Task>();
-
-        try
+        using (tokenSource = new CancellationTokenSource())
         {
-            var ids = await reader.GetIdsAsync();
+            FetchWithTaskButton.IsEnabled = false;
+            ClearListBox();
 
-            foreach(int id in ids)
+            var taskList = new List<Task>();
+
+            try
             {
-                Task<Person> personTask = reader.GetPersonAsync(id);
-                Task continuation = personTask.ContinueWith(task =>
+                var ids = await reader.GetIdsAsync();
+
+                foreach (int id in ids)
                 {
-                    Person person = task.Result;
-                    PersonListBox.Items.Add(person);
-                },
-                CancellationToken.None,
-                TaskContinuationOptions.OnlyOnRanToCompletion,
-                TaskScheduler.FromCurrentSynchronizationContext());
+                    Task<Person> personTask = reader.GetPersonAsync(id, tokenSource.Token);
+                    Task continuation = personTask.ContinueWith(task =>
+                    {
+                        Person person = task.Result;
+                        PersonListBox.Items.Add(person);
+                    },
+                    tokenSource.Token,
+                    TaskContinuationOptions.OnlyOnRanToCompletion,
+                    TaskScheduler.FromCurrentSynchronizationContext());
 
-                taskList.Add(continuation);
+                    taskList.Add(continuation);
+                }
+
+                await Task.WhenAll(taskList);
             }
-
-            await Task.WhenAll(taskList);
-        }
-        catch (OperationCanceledException ex)
-        {
-            MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
-        }
-        finally
-        {
-            FetchWithTaskButton.IsEnabled = true;
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
+            }
+            finally
+            {
+                FetchWithTaskButton.IsEnabled = true;
+            }
         }
     }
 
     // OPTION 3: Task w/ Channel (runs parallel)
     private async void FetchWithChannelButton_Click(object sender, RoutedEventArgs e)
     {
-        tokenSource = new CancellationTokenSource();
-        FetchWithChannelButton.IsEnabled = false;
-        ClearListBox();
+        using (tokenSource = new CancellationTokenSource())
+        {
+            FetchWithChannelButton.IsEnabled = false;
+            ClearListBox();
 
-        try
-        {
-            var ids = await reader.GetIdsAsync();
+            try
+            {
+                var ids = await reader.GetIdsAsync();
 
-            var channel = Channel.CreateUnbounded<Person>();
-            Task consumer = ShowData(channel.Reader);
-            Task producer = ProduceData(ids, channel.Writer, tokenSource.Token);
-            await producer;
-            await consumer;
-        }
-        catch (OperationCanceledException ex)
-        {
-            MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
-        }
-        finally
-        {
-            FetchWithChannelButton.IsEnabled = true;
+                var channel = Channel.CreateUnbounded<Person>();
+                Task consumer = ShowData(channel.Reader);
+                Task producer = ProduceData(ids, channel.Writer, tokenSource.Token);
+                await producer;
+                await consumer;
+            }
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
+            }
+            finally
+            {
+                FetchWithChannelButton.IsEnabled = true;
+            }
         }
     }
 
@@ -146,45 +151,47 @@ public partial class MainWindow : Window
     private async Task FetchPerson(int id, ChannelWriter<Person> channelWriter,
         CancellationToken cancelToken)
     {
-        var person = await reader.GetPersonAsync(id);
+        var person = await reader.GetPersonAsync(id, cancelToken);
         await channelWriter.WriteAsync(person);
     }
 
     // OPTION 4: Parallel.ForEachAsync (runs parallel)
     // Note: This code needs some additional work to get it
     // to work here. We need to marshall back to the UI thread.
-    // There is no direct way to do this with Parallel.ForEachAsync,
-    // so we would need to introduce a channel or something like that.
+    // There is no automatic way to do this with Parallel.ForEachAsync,
+    // so we would need to introduce a Dispatcher or something like that.
     private async void FetchWithForEachAsyncButton_Click(object sender, RoutedEventArgs e)
     {
-        tokenSource = new CancellationTokenSource();
-        FetchWithForEachAsyncButton.IsEnabled = false;
-        ClearListBox();
+        using (tokenSource = new CancellationTokenSource())
+        {
+            FetchWithForEachAsyncButton.IsEnabled = false;
+            ClearListBox();
 
-        try
-        {
-            var ids = await reader.GetIdsAsync();
+            try
+            {
+                var ids = await reader.GetIdsAsync();
 
-            await Parallel.ForEachAsync(
-                ids,
-                tokenSource.Token,
-                async (id, token) =>
-                { 
-                    var person = await reader.GetPersonAsync(id);
-                    PersonListBox.Items.Add(person);
-                });
-        }
-        catch (OperationCanceledException ex)
-        {
-            MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
-        }
-        finally
-        {
-            FetchWithForEachAsyncButton.IsEnabled = true;
+                await Parallel.ForEachAsync(
+                    ids,
+                    tokenSource.Token,
+                    async (id, token) =>
+                    {
+                        var person = await reader.GetPersonAsync(id);
+                        PersonListBox.Items.Add(person);
+                    });
+            }
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
+            }
+            finally
+            {
+                FetchWithForEachAsyncButton.IsEnabled = true;
+            }
         }
     }
 

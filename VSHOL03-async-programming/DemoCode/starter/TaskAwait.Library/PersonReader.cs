@@ -37,7 +37,8 @@ public class PersonReader
         return result;
     }
 
-    public Task<Person> GetPersonAsync(int id)
+    public Task<Person> GetPersonAsync(int id,
+        CancellationToken cancelToken = new())
     {
         // Note: This method uses a hard-coded dataset.
         // It does not use the service.

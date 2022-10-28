@@ -10,8 +10,8 @@ Application Overview
 
 The "Starter" folder contains the code files for this lab. 
 
+**Visual Studio 2022:** Open the "DataProcessor.sln" solution.  
 **Visual Studio Code:** Open the "Starter" folder in VS Code.  
-**Visual Studio 2022:** Open the "DataProcessor.sln" solution.
 
 *Note: The lab also contains a "Completed" folder with the finished solution. If you get stuck along the way or have issues with debugging, take a look at the code in the "Completed" folder for guidance.*
 
@@ -22,7 +22,7 @@ Start by running the console application.
 **Visual Studio Code**  
 For Visual Studio Code, we'll run the application from the command line. (This is the most consistent experience.)
 
-Here's one way to get to the right folder in Windows. In File Explorer, open the folder that contains the test project: *[working_directory]/ProductOrder.Viewer/*. From the "File" menu, choose "Open Windows PowerShell". This will give you a prompt to the correct location.
+Here's one way to get to the right folder in Windows. In File Explorer, open the folder that contains the test project: *[working_directory]/ProductOrder.Viewer/*. Right click on an empty space in the folder and choose "Open in Terminal" or "Open in PowerShell". This will give you a prompt to the correct location.
 
 ```
 PS C:\Lab03\Starter\ProductOrder.Viewer>

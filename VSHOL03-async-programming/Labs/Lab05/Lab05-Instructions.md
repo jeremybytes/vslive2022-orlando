@@ -10,8 +10,10 @@ Application Overview
 
 The "Starter" folder contains the code files for this lab. 
 
+**Visual Studio 2022:** Open the "UnderstandingAsync.sln" solution.  
 **Visual Studio Code:** Open the "Starter" folder in VS Code.  
-**Visual Studio 2022:** Open the "UnderstandingAsync.sln" solution.
+
+*Note: The lab also contains a "Completed" folder with the finished solution. If you get stuck along the way or have issues with debugging, take a look at the code in the "Completed" folder for guidance.*
 
 This solution contains a number of projects that mirror the demo code for the workshop. This lab concentrates on the "Parallel.UI.Web" project (with some bonus challenges in the "Parallel.UI.Desktop" and "Parallel.Basic" projects).  
 
@@ -25,7 +27,7 @@ Running the Application
 -----------------------
 If you are using Visual Studio 2022, start by re-building the solution (from the "Build" menu, choose "Rebuild Solution"). If you are using Visual Studio Code, you do not need to worry about this step; this is mainly to get the Visual Studio environment in sync.
 
-1. Start the Service  
+1. Start the service.  
 
 For this lab, the service must be running. You can start the service from the command line and leave it running the entire time.
 
@@ -66,7 +68,7 @@ Open a browser to [http://localhost:9874](http://localhost:9874), and you will s
 
 Click "Get People using Await (not parallel)" to make sure everything is working.
 
-> *Note: since this code is not running in parallel, it will take 10 seconds for the results to show.**
+> *Note: Since this code is not running in parallel, it will take 10 seconds for the results to show.**
 
 Lab Goals
 ---------
@@ -132,13 +134,13 @@ In addition, the non-parallel "using Await" method is available for reference:
     }
 ```
 
-*Note: a walkthrough of this method is included in the Step-by-Step instructions below.*  
+*Note: A walkthrough of this method is included in the Step-by-Step instructions below.*  
 
 Hints
 -----
 * The "ViewData" and error handling blocks can be re-used from the "WithAwait" method.
 
-* The "foreach" loop of the "WithAwait" method can be re-used for the task/continuation code (with a changed loop body).  
+* The "foreach" loop of the "WithAwait" method can be re-used for the task/continuation code (with changes to the loop body).  
 
 * The body of the "foreach" loop of the "WithAwait" method can be used for the Parallel.ForEachAsync code.
 
@@ -151,7 +153,7 @@ Hints
 
 * In the "Parallel.Basic" project, remove the need for the "lock" statements by making the "DisplayPerson" method thread-friendly.
 
-If you need more assistance, step-by-step instructions are included below. Otherwise, **STOP READING NOW**
+If you want more assistance, step-by-step instructions are included below. Otherwise, if you'd like to challenge yourself, **STOP READING NOW**
 
 Review of the "WithAwait" Method
 -------------------------------
@@ -165,7 +167,7 @@ Start by reviewing the "WithAwait" method. Here is a walkthrough:
         ViewData["RequestStart"] = DateTime.Now;
         try
         {
-            // buld of code removed
+            // bulk of code not shown
             return View("Index", people);
         }
         catch (Exception ex)
@@ -187,7 +189,7 @@ Start by reviewing the "WithAwait" method. Here is a walkthrough:
 ```c#
         try
         {
-            // buld of code removed
+            // bulk of code not shown
             return View("Index", people);
         }
 ```
@@ -293,7 +295,7 @@ This lets us use the "ViewData" elements as well as the "try/catch/finally" bloc
 
 > If we run the application at this point, the "Get People using Task" link will work the same as the "Get People using Await" link. It will take at least 9 seconds to complete.  
 
-The next steps will be to modify the contents of the "try" block.  
+The next steps are to modify the contents of the "try" block.  
 
 3. Remove the "await" keyword from the call to "GetPersonAsync" method.
 
@@ -451,9 +453,9 @@ Try refreshing the screen several times. There should be a total of 9 records re
 
 > We are running into a concurrency problem. The List&lt;T&gt; type is not thread-safe. This means that if we try to add things to a list from multiple threads, some of the "Add" calls may fail. In our case, this results in lost data.  
 
-To fix this, we can use one of the concurrent collections included in the .NET libraries. The "BlockingCollection&lt;T&gt;" class is closest to "List&lt;T&gt;".  
+To fix this, we can use one of the concurrent collections included in the .NET libraries. The "BlockingCollection&lt;T&gt;" class is closest to "List&lt;T&gt;" and will work for our application.  
 
-11. Change the "List&lt;T&gt;" type for  "people" to "BlockingCollection&lt;T&gt;".  
+11. Change the "List&lt;Person&gt;" type for  "people" to "BlockingCollection&lt;Person&gt;".  
 
 ```c#
     List<int> ids = await reader.GetIdsAsync();
@@ -506,7 +508,7 @@ A few notes about where we need to use a concurrent collection:
 
 * For the list of IDs, we do **not** need a concurrent collection. This is because we add to the list all at the same time, and we read from the list sequentially (in the "foreach" loop).  
 
-* For the list of people, we **do** need a concurrent collection since we add to the list from multiple threads (simultaneously running continuations).  
+* For the list of people, we **do** need a concurrent collection since we add to the list from multiple threads (i.e., the simultaneously running continuations).  
 
 * For the list of tasks, we do **not** need a concurrent collection since we add to the list sequentially (in the "foreach" loop).  
 
@@ -675,7 +677,7 @@ BONUS CHALLENGE - Fixing UI Issues: Step-By-Step
 -------------------------------
 As a bonus, we will look at an issue that we need to be concerned with if we are building desktop and some types of mobile applications -- getting back to the UI thread. For this we will use the "Parallel.UI.Desktop" project.  
 
-*Note: This example will only run on Windows. If you are completing the labs using macOS or Linux, you can skip to the next challenge.*  
+*Note: This example will only run on Windows. If you are completing this lab using macOS or Linux, you can skip to the next challenge.*  
 
 1. Make sure the People.Service project is running.  
 
@@ -726,7 +728,7 @@ The problem is that we can only access UI elements (like the list box) when we a
 **Using a Dispatcher**  
 One very common way of getting back to a UI thread is by using a dispatcher to marshall back to the UI thread. (That's a lot of jargon.) In this case, the desktop application has a built-in dispatcher that knows how to get back to the UI thread when we need it.  
 
-We can pass the dispatcher a delegate (usually with a lambda expression), and that delegate gets run on the UI thread.  
+We can pass the dispatcher a delegate (usually with a lambda expression), and that delegate will run on the UI thread.  
 
 6. Use "Dispatcher.Invoke" to get back to the UI thread.  
 
@@ -786,9 +788,15 @@ The "ParallelOptions" looks a little different this time. That is because there 
 
 Now all of the data comes back as a single "chunk".  
 
+> Note: Marshalling back to the UI thread like this can impact performance since there is some thread-shuffling happening. Because of this, I prefer to avoid using Dispatcher.Invoke where I can (although sometimes it is the easiest approach).  
+
+As other options, using task with a continuation allows us to specify where the continuation is run using the TaskScheduler. There is still thread-shuffling happening, but it is at a different level. The option that uses channels has the least amount of thread-shuffling. In that case, the producer (getting the data) uses various threads, but then the consumer (using the data) only uses the main (UI) thread.  
+
+As usual, the best approach for a particular situation will vary.
+
 BONUS CHALLENGE - Thread-Safe DisplayPerson Method: Step-By-Step
 -------------------------------
-As a bonus, we will look at an issue that we need to be concerned with if we are building concurrent applications -- in this case, building thread-safe methods. For this we will use the "Parallel.Basic" project.  
+As another bonus, we will look at an issue that we need to be concerned with if we are building concurrent applications -- in this case, building thread-safe methods. For this we will use the "Parallel.Basic" project.  
 
 1. Make sure the People.Service project is running.  
 
@@ -1054,7 +1062,9 @@ Since there is only a single "WriteLine" call, the "DisplayPerson" method can sa
     }
 ```
 
-> When given a choice between making a thread-safe method and using a lock, I opt for the thread-safe method. By its nature, "lock" has a certain amount of overhead associated with it. And by making blocking calls, it impacts the performance of the application. By removing the "lock", we can also remove that performance impact. For small applications like this one, there is not much impact; however, for applications that use locks for thousands of calls, the impact can be noticeable. 
+> When given a choice between using a thread-safe method and using a lock, I opt for the thread-safe method. By its nature, "lock" has a certain amount of overhead associated with it. By making blocking calls, it impacts the performance of the application.  
+
+If we can remove the "lock", we can also remove that performance impact. For small applications like this one, there is not much impact; however, for applications that use locks for thousands of calls, the impact can be noticeable. 
 
 This completes the look at one way to add thread safety to methods.
 

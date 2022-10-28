@@ -10,8 +10,8 @@ Application Overview
 
 The "Starter" folder contains the code files for this lab. 
 
+**Visual Studio 2022:** Open the "Mazes.sln" solution.  
 **Visual Studio Code:** Open the "Starter" folder in VS Code.  
-**Visual Studio 2022:** Open the "Mazes.sln" solution.
 
 This is a console application that produces mazes. There are a number of algorithms that generate mazes with different speeds and biases (a bias could be a tendency to include diagonal paths, longer/shorter paths, or twistier/straighter paths). 
 
@@ -21,7 +21,7 @@ The "MazeGeneration" project contains the "MazeGenerator" that creates the mazes
 
 The "Algorithms" project contains a number of different maze algorithms used to produce the mazes.
 
-The "MazeGrid" project contains the infrastructure for the grid, cells, text outputs, and graphical outputs. This code was originally taken from "Mazes for Programmers" and translated from Ruby to C#.
+The "MazeGrid" project contains the infrastructure for the grid, cells, text outputs, and graphical outputs. This code was originally taken from the book "Mazes for Programmers" and translated from Ruby to C#.
 
 Build the solution and run the web application. A browser window will pop up with parameters to select. Select some values from the drop-downs and click the button. This will show a maze created using the selected parameter. The different shades of color are a a "heat map" with the darker areas being furthest from the center of the maze and lighter areas being closer to the center of the maze.  
 
@@ -121,9 +121,9 @@ In Grid.cs:
 * As with the Maze Generation task, keep working your way through the method callers until you get to the MazeController class.
 
 **BONUS CHALLENGE: Additional Methods**
-* Note: There is an asynchronous version of "SaveAsPng". Locate this method call and use the asynchronous version.
+* Note: There is an asynchronous version of the "SaveAsPng" method. Locate this method call and use the asynchronous version.
 
-If you need more assistance, step-by-step instructions are included below. Otherwise, **STOP READING NOW**
+If you want more assistance, step-by-step instructions are included below. Otherwise, if you'd like to challenge yourself, **STOP READING NOW**
 
 
 Maze Generation: Step-By-Step

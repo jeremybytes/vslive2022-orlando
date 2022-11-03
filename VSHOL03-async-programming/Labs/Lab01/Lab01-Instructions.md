@@ -10,7 +10,7 @@ Application Overview
 
 The "Starter" folder contains the code files for this lab. 
 
-**Visual Studio 2022:** Open the "DataProcessor.sln" solution.
+**Visual Studio 2022:** Open the "DataProcessor.sln" solution.  
 **Visual Studio Code:** Open the "Starter" folder in VS Code.  
 
 *Note: The lab also contains a "Completed" folder with the finished solution. If you get stuck along the way or have issues with debugging, take a look at the code in the "Completed" folder for guidance.*
@@ -163,8 +163,8 @@ public Task LogMessage(string message, string data)
 }
 ```
 
-**Caution**  
-Even though this compiles, it will not work as expected. This is because of the "using" statement on the StreamWriter class. By using this code, the StreamWriter will get disposed before the "WriteLineAsync" method is called. This results in a runtime exception.
+> **Caution**  
+Even though this compiles, it may not work as expected. This is because of the "using" statement on the StreamWriter class. By using this code, the StreamWriter may get disposed before the "WriteLineAsync" method is called. This results in a runtime exception. The exact behavior depends on the specific version of the compiler.
 
 Rather than returning the task directly, await it. (Don't forget to add the "async" modifier to the method.)
 
@@ -192,7 +192,7 @@ public class NullLogger : ILogger
 }
 ```
 
-**Caution**  
+> **Caution**  
 It's tempting to return "null" from this method, particularly since the logger intentionally does nothing. But this is a bad practice can cause issues for callers.
 
 We could create a new Task with a TaskFactory, but a better solution is to use the static "CompletedTask" property on the Task type.

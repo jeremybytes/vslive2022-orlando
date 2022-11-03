@@ -40,7 +40,7 @@ public class OrderReader : DataReader
         return Task.FromResult<Order>(order);
     }
 
-    private async Task<Order?> GetOrderDetailsAsync(int orderId)
+    private async Task<Order> GetOrderDetailsAsync(int orderId)
     {
         HttpResponseMessage response =
             await client.GetAsync($"order/{orderId}").ConfigureAwait(false);
@@ -49,8 +49,8 @@ public class OrderReader : DataReader
         {
             var stringResult =
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<Order>(stringResult, options);
+            return JsonSerializer.Deserialize<Order>(stringResult, options)!;
         }
-        return null;
+        return null!;
     }
 }

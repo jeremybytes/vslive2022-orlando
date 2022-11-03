@@ -7,7 +7,7 @@ public record Product(int Id, string ProductName, string ProductDescription);
 
 public class ProductReader : DataReader
 {
-    public async Task<List<Product>?> GetProductsForOrderAsync(int orderId)
+    public async Task<List<Product>> GetProductsForOrderAsync(int orderId)
     {
         HttpResponseMessage response =
             await client.GetAsync($"product/fororder/{orderId}").ConfigureAwait(false);
@@ -16,7 +16,7 @@ public class ProductReader : DataReader
         {
             var stringResult =
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<List<Product>>(stringResult, options);
+            return JsonSerializer.Deserialize<List<Product>>(stringResult, options)!;
         }
         return new List<Product>();
     }

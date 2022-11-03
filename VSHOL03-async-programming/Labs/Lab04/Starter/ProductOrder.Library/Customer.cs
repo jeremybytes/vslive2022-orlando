@@ -7,7 +7,7 @@ public record Customer(int Id, string CustomerName);
 
 public class CustomerReader : DataReader
 {
-    public async Task<Customer?> GetCustomerForOrderAsync(int orderId)
+    public async Task<Customer> GetCustomerForOrderAsync(int orderId)
     {
         HttpResponseMessage response =
             await client.GetAsync($"customer/fororder/{orderId}").ConfigureAwait(false);
@@ -16,12 +16,12 @@ public class CustomerReader : DataReader
         {
             var stringResult =
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<Customer>(stringResult, options);
+            return JsonSerializer.Deserialize<Customer>(stringResult, options)!;
         }
-        return null;
+        return new Customer(0, "");
     }
 
-    public async Task<Customer?> GetCustomerAsync(int customerId)
+    public async Task<Customer> GetCustomerAsync(int customerId)
     {
         HttpResponseMessage response =
             await client.GetAsync($"customer/{customerId}").ConfigureAwait(false);
@@ -30,8 +30,8 @@ public class CustomerReader : DataReader
         {
             var stringResult =
                 await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<Customer>(stringResult, options);
+            return JsonSerializer.Deserialize<Customer>(stringResult, options)!;
         }
-        return null;
+        return new Customer(0, "");
     }
 }
